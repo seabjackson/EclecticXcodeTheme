@@ -12,6 +12,30 @@ protocol FetchFont {
     func fetchFont() async throws
 }
 
+class FontDownloader {
+    let fontFetcher: FetchFont
+    
+    init(fontFetcher: FetchFont) {
+        self.fontFetcher = fontFetcher
+    }
+    
+    func downloadFont() async {
+        do {
+            try await fontFetcher.fetchFont()
+        } catch {
+            print(error)
+        }
+    }
+}
+
+
+enum FetchFontErrors: Error {
+    case invalidURL
+    case firaCodeReleaseNotFound
+    case zipExtractionFailed
+}
+
+
 @available(macOS 12.0, *)
 struct FiraCodeFont: FetchFont {
     func fetchFont() async throws {
