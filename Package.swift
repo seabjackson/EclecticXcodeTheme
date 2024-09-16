@@ -14,6 +14,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "EclecticTheme",
-            dependencies: ["ZIPFoundation"])
+            dependencies: ["ZIPFoundation"],
+            resources: [.process("Resources")]
+        )
     ]
 )
