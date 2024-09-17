@@ -84,7 +84,7 @@ struct FiraCodeFont: FetchFont {
         print("📦 Extracting FiraCode font...")
         
         
-        guard let archive = try Archive(url: tempZipURL, accessMode: .read) else {
+        guard let archive = try Archive(url: tempZipURL, accessMode: .read, preferredEncoding: .utf8) else {
             throw FetchFontErrors.zipExtractionFailed
         }
         
