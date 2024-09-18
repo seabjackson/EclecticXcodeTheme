@@ -7,6 +7,7 @@
 
 import Foundation
 import ZIPFoundation
+import CoreText
 
 protocol FetchFont {
     func fetchFont() async throws
@@ -88,6 +89,9 @@ struct FiraCodeFont: FetchFont {
             throw FetchFontErrors.zipExtractionFailed
         }
         
+        // collect font file urls for registration
+        var fontFileURLs: [URL] = []
+        
         for entry in archive {
             // only interested in .ttf files
             if entry.path.hasSuffix(".ttf") {
@@ -96,10 +100,29 @@ struct FiraCodeFont: FetchFont {
                 
                 _ = try archive.extract(entry, to: destinationURL)
                 print("Extracted \(fileName) to \(destinationURL.path)")
+                
+                fontFileURLs.append(destinationURL)
             }
         }
+        
+        try registerFonts(at: fontFileURLs)
+        
         try fileManager.removeItem(at: tempZipURL)
         print(" Congrats FiraCode successfully installed")
+    }
+    
+    func registerFonts(at urls: [URL]) throws {
+        for url in urls {
+            var error: Unmanaged<CFError>?
+            let success = CTFontManagerRegisterFontsForURL(url as CFURL, .user, &error)
+            if !success {
+                if let error = error?.takeRetainedValue() {
+                    throw error as Error
+                } else {
+                    throw NSError(domain: "FontRegistration", code: -1, userInfo: [NSLocalizedDescriptionKey: "Unknown error registering font at \(url)"])
+                }
+            }
+        }
     }
 
 }
