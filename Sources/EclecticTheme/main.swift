@@ -5,8 +5,8 @@ print("Hello, world!")
 
 import Foundation
 
-let fontDownloader = FontDownloader(fontFetcher: FiraCodeFont())
-await fontDownloader.downloadFont()
+let firaFontDownloader = FontDownloader(fontFetcher: FiraCodeFont())
+try await firaFontDownloader.downloadFont()
 try installXcodeTheme("Eclectic")
 
 enum ThemeInstallationError: Error {
